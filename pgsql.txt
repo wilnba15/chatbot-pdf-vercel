@@ -1,0 +1,7 @@
+chatbot-pdf-vercel/
+├── api/
+│   └── index.py       ← (pega aquí el código que te pasé)
+├── requirements.txt   ← (pega el contenido que te pasé)
+├── Promociones_Tratamientos_Estetica.pdf  ← (sube el PDF aquí)
+├── vercel.json        ← (pega el contenido que te pasé)
+├── README.md          ← (puedes poner una descripción del proyecto)
