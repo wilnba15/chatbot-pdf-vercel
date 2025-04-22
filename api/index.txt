@@ -1,0 +1,40 @@
+import requests
+import pdfplumber
+from io import BytesIO
+
+# Link del PDF subido (puede ser Google Drive o cualquier almacenamiento público)
+PDF_URL = "https://drive.google.com/uc?export=download&id=1ABcDXYZabcdefg"
+
+def leer_preguntas_respuestas_desde_url(pdf_url):
+    response = requests.get(pdf_url)
+    pdf_file = BytesIO(response.content)
+
+    preguntas_respuestas = []
+    with pdfplumber.open(pdf_file) as pdf:
+        text = ""
+        for page in pdf.pages:
+            text += page.extract_text() + "\n"
+
+    pregunta_actual = ""
+    respuesta_actual = ""
+    lineas = text.split("\n")
+
+    for linea in lineas:
+        if linea.startswith("P:"):
+            if pregunta_actual and respuesta_actual:
+                preguntas_respuestas.append({
+                    "pregunta": pregunta_actual.strip(),
+                    "respuesta": respuesta_actual.strip()
+                })
+                respuesta_actual = ""
+            pregunta_actual = linea[2:].strip()
+        elif linea.startswith("R:"):
+            respuesta_actual += linea[2:].strip() + " "
+        else:
+            respuesta_actual += linea.strip() + " "
+    if pregunta_actual and respuesta_actual:
+        preguntas_respuestas.append({
+            "pregunta": pregunta_actual.strip(),
+            "respuesta": respuesta_actual.strip()
+        })
+    return preguntas_respuestas
